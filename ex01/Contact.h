@@ -9,6 +9,7 @@ class Contact {
   	Contact();
 
 	// Setters
+	void set_index(int var);
 	void set_creation(long var);
 	void set_first_name(std::string var);
 	void set_last_name(std::string var);
@@ -17,6 +18,7 @@ class Contact {
 	void set_secret(std::string var);
 
 	// Getters
+	int			get_index();
 	long		get_creation();
 	std::string	get_first_name();
 	std::string	get_last_name();

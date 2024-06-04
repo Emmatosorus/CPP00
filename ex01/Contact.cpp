@@ -2,6 +2,16 @@
 
 Contact::Contact() {
 	this->index = 0;
+	this->creation = 0;
+	this->First_Name = "empty";
+	this->Last_Name = "empty";
+	this->Nickname = "empty";
+	this->Phone_Number = "empty";
+	this->Secret = "empty";
+}
+
+void Contact::set_index(int var) {
+	this->index = var;
 }
 
 void Contact::set_creation(long var) {
@@ -26,6 +36,10 @@ void Contact::set_phone_number(std::string var) {
 
 void Contact::set_secret(std::string var) {
 	this->Secret = var;
+}
+
+int Contact::get_index() {
+	return (this->index);
 }
 
 long Contact::get_creation() {

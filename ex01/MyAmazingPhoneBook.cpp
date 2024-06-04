@@ -19,17 +19,40 @@ void	display_instructions()
 	std::cout << "\n\\******************************************************************/\n\n";
 }
 
+int	get_correct_index(PhoneBook *book)
+{
+	int		j = 0;
+	long	oldest = 0;
+
+	while (book->contacts[j].get_creation() != 0 && j < 9)
+		j++;
+	if (j > 8)
+	{
+		while (--j >= 0)
+		{
+			if (book->contacts[j].get_creation() > oldest)
+				oldest = book->contacts[j].get_creation();
+		}
+		while (book->contacts[j].get_creation() == oldest)
+			j++;
+	}
+	return (j);
+
+}
+
 void	add_contact(PhoneBook *book)
 {
 	std::string input;
 	std::string txt[5];
 	int			i = -1;
+	int			j;
 	time_t		tt;
 	struct tm	*ti;
 
 	time(&tt);
 	ti = localtime(&tt);
-	book->contacts[0].set_creation(ti->tm_sec + ti->tm_min + ti->tm_hour);
+	j = get_correct_index(book);
+	book->contacts[j].set_creation(ti->tm_sec + ti->tm_min + ti->tm_hour);
 	txt[0] = "First Name : ";
 	txt[1] = "Last Name : ";
 	txt[2] = "Nickname : ";
@@ -42,41 +65,95 @@ void	add_contact(PhoneBook *book)
 		if (!std::cin)
 			exit(1);
 		if (i == 0)
-			book->contacts[0].set_first_name(input);
+			book->contacts[j].set_first_name(input);
+		if (i == 1)
+			book->contacts[j].set_last_name(input);
+		if (i == 2)
+			book->contacts[j].set_nickname(input);
+		if (i == 3)
+			book->contacts[j].set_phone_number(input);
+		if (i == 4)
+			book->contacts[j].set_secret(input);
 		std::cout << "\x1b[A" << '\r' << std::string(txt[i].size() + input.size(), ' ') << '\r' << std::flush;
 	}
 }
 
+void	print_all(PhoneBook *book, unsigned long *w_clear)
+{
+	int	j = -1;
+	std::string str;
+	std::cout << "/*******************************************\\" << std::endl;
+	std::cout << "|  Index   |First Name| Last Name| Nickname |" << std::endl;
+	while (++j < 8)
+	{
+		std::cout << "|**********|**********|**********|**********|" << std::endl;
+		std::cout << "|";
+		std::cout.width(10);
+		std::cout << std::left << book->contacts[j].get_index() << "|";
+		std::cout.width(10);
+		str = book->contacts[j].get_first_name();
+		std::cout << std::left << str << "|";
+		if (str.size() > *w_clear)
+			*w_clear = str.size();
+		std::cout.width(10);
+		std::cout << std::left << book->contacts[j].get_last_name() << "|";
+		std::cout.width(10);
+		std::cout << std::left << book->contacts[j].get_nickname() << "|" << std::endl;
+		std::cout.width(45);
+	}
+	std::cout << "\\*******************************************/" << std::endl;
+
+}
+
 void	search_contact(PhoneBook *book)
 {
-	std::string f_name;
+	std::string	input;
+	long			index = 0;
+	unsigned long	w_clear = 45;
+	long			h_clear = 19;
 
-	f_name = book->contacts[0].get_first_name();
-	printf("%ld\n", book->contacts[0].get_creation());
-	std::cout << f_name << std::flush;
-	sleep(2);
-	std::cout << '\r' << std::string(f_name.size(), ' ') << '\r' << std::flush;
+	print_all(book, &w_clear);
+	while (index < 1 || index > 8)
+	{
+		std::getline(std::cin, input);
+		if (!std::cin)
+			exit(1);
+		if (input.size() > w_clear)
+			w_clear = input.size();
+		index = atoi(input.c_str());
+		if (index < 1 || index > 8)
+		{
+			std::cout << "Incorrect Index, try again :" << std::endl;
+			h_clear += 2;
+		}
+	}
+	for (int i = -1; i < h_clear; i++)
+		std::cout << "\x1b[A" << '\r' << std::string(w_clear, ' ') << '\r' << std::flush;
+
 }
 
 int	main(void)
 {
 	PhoneBook	book;
-	display_instructions();
-	std::string	input = "Hello, unstop!";
+	std::string	input;
 
+	display_instructions();
+	int	i = -1;
+	while (++i < 9)
+		book.contacts[i].set_index(i + 1);
 	do {
 		std::getline(std::cin, input);
 		if (!std::cin)
 			exit(1);
 		if (input == "ADD")
 		{
-			std::cout << "\x1b[A" << '\r' << std::string(input.size(), ' ') << '\r' << std::flush;
 			add_contact(&book);
+			std::cout << "\x1b[A" << '\r' << std::string(input.size(), ' ') << '\r' << std::flush;
 		}
 		else if (input == "SEARCH")
 		{
-			std::cout << "\x1b[A" << '\r' << std::string(input.size(), ' ') << '\r' << std::flush;
 			search_contact(&book);
+			std::cout << "\x1b[A" << '\r' << std::string(input.size(), ' ') << '\r' << std::flush;
 		}
 		else
 			std::cout << "\x1b[A" << '\r' << std::string(input.size(), ' ') << '\r' << std::flush;
@@ -87,4 +164,8 @@ int	main(void)
 
 /*
  * https://stackoverflow.com/questions/10058050/how-to-go-up-a-line-in-console-programs-c
+ *
+ * 	std::cout << "\x1B[2J\x1B[H";
+	std::cout.flush();
+ *
  */
