@@ -1,6 +1,6 @@
 NAME = phone_book
 CPP = c++
-CPP_FLAGS = -Wall -Wextra -Werror -std=c++98
+CPP_FLAGS = -Wall -Wextra -Werror -std=c++98 -g
 OBJ_DIR = .obj/
 
 # ---------- Sources --------- #

@@ -20,9 +20,9 @@ class Contact {
 	// Getters
 	int			get_index();
 	long		get_creation();
-	std::string	get_first_name();
-	std::string	get_last_name();
-	std::string	get_nickname();
+	std::string	get_first_name(int size);
+	std::string	get_last_name(int size);
+	std::string	get_nickname(int size);
 	std::string	get_phone_number();
 	std::string	get_secret();
 
