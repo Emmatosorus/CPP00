@@ -29,18 +29,17 @@ void	clear_window()
 
 void	clear_text(size_t size)
 {
-	(void)size;
-//	struct winsize w;
-//	size_t nb;
-//
-//	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-//	if (size == 0 || size <= w.ws_col)
-//		size = w.ws_col;
-//	nb = static_cast<int>(size / w.ws_col);
-//	if (size % w.ws_col != 0)
-//		nb++;
-//	while (nb-- > 0)
-//		std::cout << "\x1b[A" << '\r' << std::string(w.ws_col, ' ') << '\r' << std::flush;
+	struct winsize w;
+	size_t nb;
+
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+	if (size == 0 || size <= w.ws_col)
+		size = w.ws_col;
+	nb = static_cast<int>(size / w.ws_col);
+	if (size % w.ws_col != 0)
+		nb++;
+	while (nb-- > 0)
+		std::cout << "\x1b[A" << '\r' << std::string(w.ws_col, ' ') << '\r' << std::flush;
 }
 
 int	get_correct_index(PhoneBook *book)
@@ -81,7 +80,6 @@ void	add_contact(PhoneBook *book)
 	ti = localtime(&tt);
 	j = get_correct_index(book);
 	book->contacts[j].set_creation(ti->tm_sec + (ti->tm_min * 60) + (ti->tm_hour * 3600));
-	std::cout << "\x1b[34;1mIndex : " << j << "\x1b[0m" << std::endl;
 	txt[0] = "\x1b[37;1mFirst Name : \x1b[0m";
 	txt[1] = "\x1b[37;1mLast Name : \x1b[0m";
 	txt[2] = "\x1b[37;1mNickname : \x1b[0m";
@@ -96,6 +94,7 @@ void	add_contact(PhoneBook *book)
 			if (!std::cin)
 				exit(1);
 			clear_text(txt[i].size() + input.size());
+			std::cout << '\r' << std::flush;
 		}
 		while (input.empty());
 		if (i == 0)
@@ -143,12 +142,15 @@ void	search_contact(PhoneBook *book)
 	int8_t		i = 0;
 
 	print_all(book);
+	std::cout << "\x1b[32;1mTo exit this interface: Type \"EXIT\"\x1b[0m" << std::endl;
 	while (index < 1 || index > 8 || input.size() != 1)
 	{
 		std::cout << "\x1b[37;1mIndex : \x1b[0m";
 		std::getline(std::cin, input);
 		if (!std::cin)
 			exit(1);
+		if (input == "EXIT")
+			return ;
 		index = atoi(input.c_str());
 		if (index < 1 || index > 8 || input.size() != 1)
 			std::cout << "\x1b[1mIncorrect index, try again :\x1b[0m" << std::endl;
@@ -197,7 +199,7 @@ int	main(void)
 			clear_window();
 	}
 	while (input != "EXIT");
-	std::cout << "\x1b[36;1mGoodbye! See you soon! ^^\x1b[0m\n";
+	std::cout << "\x1b[35;1mGoodbye! See you soon! ^^\x1b[0m\n";
 	sleep(2);
 	std::cout << "\033[H\033[J";
 	std::cout.flush();
