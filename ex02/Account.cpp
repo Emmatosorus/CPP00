@@ -47,7 +47,7 @@ int	Account::getNbWithdrawals() {
 
 void	Account::displayAccountsInfos() {
 	_displayTimestamp();
-	std::cout << "accounts:" << getNbAccounts();
+	std::cout << " accounts:" << getNbAccounts();
 	std::cout << ";total:" << getTotalAmount();
 	std::cout << ";deposits:" << getNbDeposits();
 	std::cout << ";withdrawals:" << getNbWithdrawals() << std::endl;
@@ -79,9 +79,16 @@ void	Account::_displayTimestamp()
 }
 
 void	Account::makeDeposit(int deposit) {
+	_displayTimestamp();
+	std::cout << " index:" << this->_accountIndex;
+	std::cout << ";p_amount:" << this->_amount;
+	std::cout << ";deposit:" << deposit;
 	_amount += deposit;
+	std::cout << ";amount:" << this->_amount;
 	_nbDeposits++;
 	_totalNbDeposits++;
+	std::cout << ";nb_deposits:" << _nbDeposits << std::endl;
+
 }
 
 int	Account::checkAmount() const {
