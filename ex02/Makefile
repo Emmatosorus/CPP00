@@ -1,4 +1,4 @@
-NAME = phone_book
+NAME = dream_job
 CPP = c++
 CPP_FLAGS = -Wall -Wextra -Werror -std=c++98 -g
 OBJ_DIR = .obj/
@@ -6,9 +6,8 @@ OBJ_DIR = .obj/
 # ---------- Sources --------- #
 
 SRC = \
-	MyAmazingPhoneBook.cpp \
-	PhoneBook.cpp \
-	Contact.cpp
+	Account.cpp \
+	tests.cpp
 
 OBJ =	$(SRC:%.cpp=$(OBJ_DIR)%.o)
 
